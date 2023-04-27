@@ -1,0 +1,65 @@
+﻿@using Natom.ATSA.Colegio.Models
+
+@{
+    ViewBag.Title = "Carreras / Cursos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Html.Hidden("FiltroEstado")
+<style type="text/css">
+    #modalRendicionDetalle .modal-dialog {
+        width: 900px !important;
+    }
+</style>
+<div class="row" style="display:inline-block;width:100%">
+    <div class="col-md-4">
+        <h2>Carreras / Cursos</h2>
+    </div>
+    <div class="col-xs-2">
+        <div class="form-group">
+            <label>Tipo</label>
+            <select id="FiltroTipo" class="form-control">
+                <option>Todos</option>
+                @foreach (var t in ViewBag.Tipo as List<CarreraCursoTipo>)
+                {
+                    <option value="@t.CarreraCursoTipoId">@t.Descripcion</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="col-xs-2">
+        <div class="form-group">
+            <label>Cursada</label>
+            <select id="FiltroCursada" class="form-control">
+                <option>Todos</option>
+                @foreach (var t in ViewBag.Duracion as List<TipoDuracion>)
+                {
+                    <option value="@t.TipoDuracionId">@t.Descripcion</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <a class="btn btn-success pull-right" style="margin-right:-30px;margin-top:12px;" id="NuevaCarreraCurso">Nueva</a>
+    </div>
+</div>
+<br />
+<table width="100%" id="tbl" class="table table-condensed">
+    <thead>
+        <tr>
+            <th>
+                Carrera / Curso
+            </th>
+            <th>
+                Duración
+            </th>
+            <th>
+                Horarios
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+</table>
+<div id="divModal">
+</div>
+<script src="~/Resources/js/carrerascursos/Index.min.js"></script>

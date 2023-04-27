@@ -1,0 +1,61 @@
+﻿<link href="~/Resources/components/bootstrap-datepicker-3/bootstrap-datetimepicker.css" rel="stylesheet" />
+<script src="~/Resources/components/bootstrap-datepicker-3/moment.js"></script>
+<script src="~/Resources/components/bootstrap-datepicker-3/bootstrap-datetimepicker.js"></script>
+@{
+    /**/
+
+    ViewBag.Title = "Movimientos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style type="text/css">
+    #fechaDesde, #fechaHasta {
+        cursor:pointer;
+    }
+</style>
+
+<div class="row" style="display:inline-block;width:100%">
+    <div class="col-md-6">
+        <h2>Movimientos</h2>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <label>Desde</label>
+            <input type="text" class="form-control" placeholder="Sin filtro -ver todos-" id="fechaDesde" />
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <label>Hasta (inclusive)</label>
+            <input type="text" class="form-control" placeholder="Sin filtro -ver todos-" id="fechaHasta" />
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <label>Acumulado</label>
+            <div class="input-group">
+                <span class="input-group-addon">$</span>
+                <input type="text" class="form-control" disabled id="acumulado" />
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<table width="100%" id="tbl" class="table table-condensed">
+    <thead>
+        <tr>
+            <th>
+                Fecha y hora
+            </th>
+            <th>
+                Descripción
+            </th>
+            <th>
+                Monto
+            </th>
+        </tr>
+    </thead>
+</table>
+<div id="divModal">
+</div>
+<script src="~/Resources/js/movimientos/Index.min.js"></script>

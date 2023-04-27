@@ -1,0 +1,675 @@
+﻿@using Natom.ATSA.Colegio.Models
+@model Inscripcion
+@Html.Hidden("Reinscripcion")
+<link href="~/Resources/components/bootstrap-datepicker-3/bootstrap-datetimepicker.css" rel="stylesheet" />
+<script src="~/Resources/components/bootstrap-datepicker-3/moment.js"></script>
+<script src="~/Resources/components/bootstrap-datepicker-3/bootstrap-datetimepicker.js"></script>
+
+<div id="modalInscripcion" class="modal fade" role="dialog">
+    <div class="modal-dialog" style="width:900px">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <div class="row">
+                    <div class="col-xs-3">
+                        @if (Model.InscripcionId > 0)
+                        {
+                            <h4 class="modal-title" style="color:black!important"><b>Editar inscripción</b></h4>
+                        }
+                        else
+                        {
+                            <h4 class="modal-title" style="color:black!important"><b>Nueva inscripción</b></h4>
+                        }
+                    </div>
+                    <div class="col-xs-3">
+                        <div class="input-group" style="position: absolute; margin-top: -5px;">
+                            <span class="input-group-addon">N° Afiliado</span>
+                            <input type="text" class="form-control" aria-label="" id="NroAfiliado" name="NroAfiliado" value="@Model.Afiliado">
+                        </div>
+                    </div>
+                    <div class="col-xs-5">
+                        <div class="input-group" style="position: absolute; margin-top: -5px;">
+                            <span class="input-group-addon">Persona</span>
+                            <select class="selPersona" size="1">
+                                <option value="-1">Seleccione</option>
+                                <option value="-2">No afiliada</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <input type="hidden" name="InscripcionId" id="InscripcionId" value="@Model.InscripcionId" />
+            <div class="modal-body">
+                <div class="row" style="padding:0px 15px 0px 15px;">
+                    <div class="col-xs-12">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <div class="form-group">
+                                    <label>Nombre</label>
+                                    <input type="text" name="Nombre" id="Nombre" class="form-control" value="@Model.Nombre" />
+                                    <span id="ErrorNombre" style="display:none;color:red;">Debe completar el campo.</span>
+                                </div>
+                            </div>
+                            <div class="col-xs-3">
+                                <div class="form-group">
+                                    <label>Apellido</label>
+                                    <input type="text" name="Apellido" id="Apellido" class="form-control" value="@Model.Apellido" />
+                                    <span id="ErrorApellido" style="display:none;color:red;">Debe completar el campo.</span>
+                                </div>
+                            </div>
+                            <div class="col-xs-3">
+                                <div class="form-group">
+                                    <label>DNI</label>
+                                    <input type="text" name="DNI" id="DNI" class="form-control" value="@Model.DNI" />
+                                    <span id="ErrorDNI" style="display:none;color:red;">Debe completar el campo.</span>
+                                </div>
+                            </div>
+                            <div class="col-xs-3">
+                                <div class="form-group">
+                                    <label>Teléfono</label>
+                                    <input type="text" name="Telefono" id="Telefono" class="form-control" value="@Model.Telefono" />
+                                    <span id="ErrorTelefono" style="display:none;color:red;">Debe completar el campo.</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="text" name="Email" id="Email" class="form-control" value="@Model.Email" />
+                                    <span id="ErrorEmail" style="display:none;color:red;">Debe completar el campo.</span>
+                                </div>
+                            </div>
+                            <div class="col-xs-2">
+                                <div class="form-group">
+                                    <label>Edad</label>
+                                    <input type="text" name="Edad" id="Edad" readonly class="form-control" value="@Model.Edad" />
+                                </div>
+                            </div>
+                            <div class="col-xs-3">
+                                <div class="form-group">
+                                    <label>Fecha de nacimiento</label>
+                                    <input type="text" name="FechaNacimiento" id="FechaNacimiento" class="form-control" value="@(Model.FechaNacimiento.Value.ToString("dd/MM/yyyy") == "01/01/0001" ? string.Empty :  DateTime.Parse(Model.FechaNacimiento.ToString()).ToString("dd/MM/yyyy"))" />
+                                </div>
+                            </div>
+                            <div class="col-xs-3">
+                                <div class="form-group">
+                                    <label>Lugar de nacimiento</label>
+                                    <input type="text" name="LugarNacimiento" id="LugarNacimiento" class="form-control" value="@Model.LugarNacimiento" />
+                                    <span id="ErrorLugar" style="display:none;color:red;">Debe completar el campo.</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <div class="form-group">
+                                    <label>Carrera / Curso</label>
+                                    <select class="form-control" name="CarreraCursoId" id="CarreraCursoId">
+                                        <option value="0">No aplica</option>
+                                        @foreach (var t in ViewBag.CarrerasCursos as List<CarreraCurso>)
+                                        {
+                                            <option value="@t.CarreraCursoId" data-id="@t.CarreraCursoId" data-duracion="@t.Duracion" data-tipo="@t.TipoDuracionId" @(Model.CarreraCursoId == t.CarreraCursoId ? "selected" : string.Empty)>@t.Titulo</option>
+                                        }
+                                    </select>
+                                    <span id="ErrorCarreraCurso" style="display:none;color:red;">Debe seleccionar el campo.</span>
+                                </div>
+                            </div>
+                            <div class="col-xs-6">
+                                <div class="form-group">
+                                    <label>Ciclo lectivo</label>
+                                    <select disabled class="form-control" name="CicloLectivoId" id="CicloLectivoId">
+                                        <option value="1">Seleccione Carrera</option>
+                                    </select>
+                                    <span id="ErrorCicloLectivo" style="display:none;color:red;">Debe seleccionar el campo.</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <div class="form-group">
+                                    <label>Dirección</label>
+                                    <input type="text" name="Direccion" id="Direccion" class="form-control" value="@Model.Direccion" />
+                                </div>
+                            </div>
+                            <div class="col-xs-3">
+                                <div class="form-group">
+                                    <label>Localidad</label>
+                                    <input type="text" name="Localidad" id="Localidad" class="form-control" value="@Model.Localidad" />
+                                </div>
+                            </div>
+                            <div class="col-xs-3">
+                                <div class="form-group">
+                                    <label>Recibo</label>
+                                    <input type="text" name="Recibo" id="Recibo" class="form-control" value="@Model.Recibo" />
+                                    <span id="ErrorRecibo" style="display:none;color:red;">Debe completar el campo.</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <div class="input-group">
+                                    <span class="input-group-addon">Sexo</span>
+                                    <div class="form-control">
+                                        <input type="checkbox" id="chkM" class="chkSexo" value="M" style="float:left; cursor:pointer;" @(Model.Sexo.Equals("M") ? "checked" : "") /><label style="float:left; margin-left:5px;"><b>M</b></label>
+                                        <input type="checkbox" id="chkF" class="chkSexo" value="F" style="float:left; cursor:pointer; margin-left:20px;" @(Model.Sexo.Equals("F") ? "checked" : "") /><label style="float:left; margin-left:5px;"><b>F</b></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-9">
+                                <div class="input-group">
+                                    <span class="input-group-addon">Estado civil</span>
+                                    <div class="form-control">
+                                        <input type="checkbox" id="chkSoltero" class="chkEstadoCivil" value="S" style="float:left; cursor:pointer;" @(Model.EstadoCivil.Equals("S") ? "checked" : "") /><label style="float:left; margin-left:5px;"><b>Soltero/a</b></label>
+                                        <input type="checkbox" id="chkCasado" class="chkEstadoCivil" value="C" style="float:left; cursor:pointer; margin-left:20px;" @(Model.EstadoCivil.Equals("C") ? "checked" : "") /><label style="float:left; margin-left:5px;"><b>Casado/a</b></label>
+                                        <input type="checkbox" id="chkDivorciado" class="chkEstadoCivil" value="D" style="float:left; cursor:pointer; margin-left:20px;" @(Model.EstadoCivil.Equals("D") ? "checked" : "") /><label style="float:left; margin-left:5px;"><b>Divorciado/a</b></label>
+                                        <input type="checkbox" id="chkViudo" class="chkEstadoCivil" value="V" style="float:left; cursor:pointer; margin-left:20px;" @(Model.EstadoCivil.Equals("V") ? "checked" : "") /><label style="float:left; margin-left:5px;"><b>Viudo/a</b></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 15px;">
+                            <div class="col-xs-12">
+                                <div class="input-group">
+                                    <span class="input-group-addon">Entrega documentación</span>
+                                    <div class="form-control divDocumentacion">
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                        <h4>Antecedentes institucionales</h4>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="form-group">
+                                    <label>Cargo / Función</label>
+                                    <input type="text" name="TrabajoCargoFuncion" id="TrabajoCargoFuncion" class="form-control" value="@Model.TrabajoCargoFuncion" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <div class="form-group">
+                                    <label>Antiguedad</label>
+                                    <input type="text" name="TrabajoAntiguedad" id="TrabajoAntiguedad" class="form-control" value="@Model.TrabajoAntiguedad" />
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="form-group">
+                                    <label>Región sanitaria</label>
+                                    <input type="text" name="TrabajoRegionSanitaria" id="TrabajoRegionSanitaria" class="form-control" value="@Model.TrabajoRegionSanitaria" />
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="form-group">
+                                    <label>Dependencia</label>
+                                    <input type="text" name="TrabajoDependencia" id="TrabajoDependencia" class="form-control" value="@Model.TrabajoDependencia" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <div class="form-group">
+                                    <label>Dirección (laboral)</label>
+                                    <input type="text" name="TrabajoDireccionLaboral" id="TrabajoDireccionLaboral" class="form-control" value="@Model.TrabajoDireccionLaboral" />
+                                </div>
+                            </div>
+                            <div class="col-xs-6">
+                                <div class="form-group">
+                                    <label>Localidad</label>
+                                    <input type="text" name="TrabajoLocalidad" id="TrabajoLocalidad" class="form-control" value="@Model.TrabajoLocalidad" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <div class="form-group">
+                                    <label>Teléfono</label>
+                                    <input type="text" name="TrabajoTelefono" id="TrabajoTelefono" class="form-control" value="@Model.TrabajoTelefono" />
+                                </div>
+                            </div>
+                            <div class="col-xs-6">
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="text" name="TrabajoEmail" id="TrabajoEmail" class="form-control" value="@Model.TrabajoEmail" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" style="float:left;">Cancelar</button>
+                <button type="button" class="btn btn-success" id="btnCargar" style="float:right;">Grabar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var personas = [];
+    var requisitosEntregados = [@(Model.RequisitosEntregados == null ? "" : String.Join(", ", Model.RequisitosEntregados.Select(r => r.RequisitoId.ToString()).ToList()))];
+
+    $(document).ready(function () {
+
+        $('#FechaNacimiento').datetimepicker({
+            format: 'DD/MM/YYYY',
+            widgetPositioning: {
+                horizontal: 'auto',
+                vertical: 'auto'
+            }
+        });
+
+        //$("#CarreraCursoId, #CicloLectivoId").chosen();
+        $("#CarreraCursoId").chosen();
+        $("#Edad").ForceNumericOnly();
+
+        $(".chkSexo[value='M']").change(function () {
+            if ($(this).is(":checked")) {
+                $(".chkSexo[value='F']").prop("checked", false);
+            }
+        });
+
+        $(".chkSexo[value='F']").change(function () {
+            if ($(this).is(":checked")) {
+                $(".chkSexo[value='M']").prop("checked", false);
+            }
+        });
+
+        //if ($("#Reinscripcion").val() == "True") {
+        //    $("#CicloLectivoId").val("").trigger("chosen:updated");
+        //}
+
+        $(".selPersona").chosen();
+
+        $("#FechaNacimiento").on('dp.change', function (e) {
+            var fechaNacimiento = $(this).val();
+            if (fechaNacimiento == "") {
+                $("#Edad").val("");
+            }
+            else {
+                $.ajax({
+                    url: '/colegiotest/inscripciones/ObtenerEdadDesdeFecha',
+                    method: 'POST',
+                    data: { fecha: fechaNacimiento },
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.success == true) {
+                            $("#Edad").val(data.edad);
+                        }
+                    }
+                });
+            }
+        });
+
+        $("#CarreraCursoId").unbind().change(function () {
+            var id = $(this).val();
+            ObtenerRequisitos(id);
+        }).trigger("change");
+
+        $("#CarreraCursoId").change(function () {
+
+            carrera = {
+                id: $(this).find(":selected").data("id"),
+                duracion: $(this).find(":selected").data("duracion"),
+                tipo: $(this).find(":selected").data("tipo")
+            }
+
+            $("#CicloLectivoId").prop("disabled", false);
+            $("#CicloLectivoId").empty();
+
+            if (carrera.tipo == "2") {
+                for (let i = 1; i <= carrera.duracion; i++)
+                    $("#CicloLectivoId").append("<option value='" + carrera.id + "'> Inscripcion a " + i + "ª año</option>");
+            }
+            else if (carrera.tipo == "1")
+                $("#CicloLectivoId").append("<option value='" + carrera.id + "'> Inscripcion a " + 1 + "ª año</option>");
+            else {
+                $("#CicloLectivoId").append("<option value='" + -1 + "'>Seleccione Carrera</option>");
+                $("#CicloLectivoId").prop("disabled", true);
+            }
+
+        });
+
+        $("#NroAfiliado").unbind().change(function () {
+            var nro = $(this).val();
+            if (nro.length > 0) {
+                ObtenerDatosAfiliado(nro);
+            }
+        });
+
+        setTimeout(function () {
+            if ($("#InscripcionId").val() == "0") {
+                $("#NroAfiliado").focus();
+            }
+        }, 300);
+
+        $("#btnCargar").on('click', function () {
+            var nombre = $("#Nombre").val();
+            var apellido = $("#Apellido").val();
+            var dni = $("#DNI").val();
+            var telefono = $("#Telefono").val();
+            var email = $("#Email").val();
+            var lugarnacimiento = $("#LugarNacimiento").val();
+            var carreracursoid = parseInt($("#CarreraCursoId").val());
+            var ciclolectivoid = parseInt($("#CicloLectivoId").val());
+            var afiliado = $("#NroAfiliado").val();
+            var recibo = $("#Recibo").val();
+            var error = false;
+
+            if ($(".selPersona").val() == "-1") {
+                Mensajes.MostrarError("Debes indicar 'Persona'.");
+                return;
+            }
+
+            if (nombre.length > 0) {
+                $("#ErrorNombre").hide();
+            }
+            else {
+                $("#ErrorNombre").show();
+                error = true;
+            }
+            if (apellido.length > 0) {
+                $("#ErrorApellido").hide();
+            }
+            else {
+                $("#ErrorApellido").show();
+                error = true;
+            }
+            if (dni.length > 0) {
+                $("#ErrorDNI").hide();
+            }
+            else {
+                $("#ErrorDNI").show();
+                error = true;
+            }
+            if (telefono.length > 0) {
+                $("#ErrorTelefono").hide();
+            }
+            else {
+                $("#ErrorTelefono").show();
+                error = true;
+            }
+            if (email.length > 0) {
+                $("#ErrorEmail").hide();
+            }
+            else {
+                $("#ErrorEmail").show();
+                error = true;
+            }
+            if (lugarnacimiento.length > 0) {
+                $("#ErrorLugar").hide();
+            }
+            else {
+                $("#ErrorLugar").show();
+                error = true;
+            }
+            if (carreracursoid > 0) {
+                $("#ErrorCarreraCurso").hide();
+            }
+            else {
+                $("#ErrorCarreraCurso").show();
+                error = true;
+            }
+            //if (ciclolectivoid > 0) {
+            //    $("#ErrorCicloLectivo").hide();
+            //}
+            //else {
+            //    $("#ErrorCicloLectivo").show();
+            //    error = true;
+            //}
+            //if (afiliado.length > 0) {
+            //    $("#ErrorAfiliado").hide();
+            //}
+            //else {
+            //    $("#ErrorAfiliado").show();
+            //    error = true;
+            //}
+            //if (recibo.length > 0) {
+            //    $("#ErrorRecibo").hide();
+            //}
+            //else {
+            //    $("#ErrorRecibo").show();
+            //    error = true;
+            //}
+
+            if (!error && $(".chkSexo:checked").length == 0) {
+                Mensajes.MostrarError("Falta seleccionar el Sexo.");
+                return;
+            }
+
+            if (!error && $(".chkSexo:checked").length > 1) {
+                Mensajes.MostrarError("Sexo inválido.");
+                return;
+            }
+
+            if (!error && $(".chkEstadoCivil:checked").length == 0) {
+                Mensajes.MostrarError("Falta seleccionar el Estado civil.");
+                return;
+            }
+
+            if (!error && $(".chkEstadoCivil:checked").length > 1) {
+                Mensajes.MostrarError("Estado civil inválido.");
+                return;
+            }
+
+
+            if (!error) {
+                MostrarCargando();
+                $.ajax({
+                    url: '/colegiotest/inscripciones/Crear_EditarInscripcion',
+                    method: 'POST',
+                    data: { model: ObtenerObjeto() },
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.success == true) {
+                            var callbackNO = function () { location.href = '/colegiotest/inscripciones/Index'; };
+                            if (data.nuevo && !data.afiliado && !data.cobrado) {
+                                Mensajes.MostrarSiNo("El alumno inscripto no es Afiliado. ¿Desea realizarle el cobro ahora?", function () {
+                                    $("#modalInscripcion").modal("hide");
+                                    setTimeout(function () {
+                                        AbrirModalCobranza(data.id, data.cobranza.mes, data.cobranza.anio);
+                                    }, 350);
+                                }, callbackNO);
+                            }
+                            else {
+                                callbackNO();
+                            }
+                        }
+                        else {
+                            Mensajes.MostrarError(data.error);
+                            OcultarCargando();
+                        }
+                    }
+                });
+            }
+        });
+
+
+        $(".selPersona").change(function () {
+            var index = parseInt($(this).val());
+            if (index < 0) {
+                LimpiarDatosPersona();
+            }
+            else {
+                CargarDatosPersona(index);
+            }
+        });
+
+        if ($("#NroAfiliado").val() != "") {
+            ObtenerDatosAfiliado($("#NroAfiliado").val().split('-')[0], true);
+        }
+        else if ($("#Nombre").val() != "") {
+            $(".selPersona").val("-2").trigger("chosen:updated");
+        }
+    });
+
+    function LimpiarDatosPersona() {
+        $("#Nombre").val("");
+        $("#Apellido").val("");
+        $("#DNI").val("");
+        $("#Localidad").val("");
+        $("#Telefono").val("");
+        $("#Domicilio").val("");
+        $("#FechaNacimiento").val("");
+        $("#Edad").val("");
+    }
+
+    function CargarDatosPersona(index) {
+        var data = personas[index];
+        $("#Nombre").val(data.nombre);
+        $("#Apellido").val(data.apellido);
+        $("#DNI").val(data.dni);
+        $("#Localidad").val(data.localidad);
+        $("#Telefono").val(data.telefono);
+        $("#Domicilio").val(data.domicilio);
+        $("#FechaNacimiento").val(data.fechaNacimiento);
+        $("#Edad").val(data.edad);
+        $("#NroAfiliado").val(data.numeroAfiliado);
+        $("#Email").focus();
+    }
+
+    function RequisitoEntregado(requisitoId) {
+        var entregado = false;
+        requisitoId = parseInt(requisitoId);
+        $.each(requisitosEntregados, function (i, req) {
+            if (requisitoId == req) {
+                entregado = true;
+                return;
+            }
+        })
+        return entregado;
+    }
+
+    function ObtenerObjeto() {
+        var obj = {
+            InscripcionId: $("#InscripcionId").val(),
+            Nombre: $("#Nombre").val(),
+            Apellido: $("#Apellido").val(),
+            DNI: $("#DNI").val(),
+            Telefono: $("#Telefono").val(),
+            Email: $("#Email").val(),
+            Edad: $("#Edad").val(),
+            FechaNacimiento: $("#FechaNacimiento").val(),
+            LugarNacimiento: $("#LugarNacimiento").val(),
+            Direccion: $("#Direccion").val(),
+            Localidad: $("#Localidad").val(),
+            Afiliado: $("#NroAfiliado").val(),
+            Recibo: $("#Recibo").val(),
+            CarreraCursoId: $("#CarreraCursoId").val(),
+            //CicloLectivoId: $("#CicloLectivoId").val(),
+            Sexo: $(".chkSexo:checked").val(),
+            EstadoCivil: $(".chkEstadoCivil:checked").val(),
+            TrabajoCargoFuncion: $("#TrabajoCargoFuncion").val(),
+            TrabajoAntiguedad: $("#TrabajoAntiguedad").val(),
+            TrabajoRegionSanitaria: $("#TrabajoRegionSanitaria").val(),
+            TrabajoDependencia: $("#TrabajoDependencia").val(),
+            TrabajoDireccionLaboral: $("#TrabajoDireccionLaboral").val(),
+            TrabajoLocalidad: $("#TrabajoLocalidad").val(),
+            TrabajoTelefono: $("#TrabajoTelefono").val(),
+            TrabajoEmail: $("#TrabajoEmail").val(),
+            RequisitosEntregados: $(".chkEntregaDoc:checked").map(function () { return { RequisitoId: $(this).attr("requisitoId") } }).toArray()
+        };
+
+        if (obj.Afiliado != null && obj.Afiliado == "") {
+            obj.Afiliado = null;
+        }
+
+        return obj;
+    }
+
+    function ObtenerDatosAfiliado(nro, esStartup)
+    {
+        if (esStartup == undefined)
+            esStartup = false;
+
+        MostrarCargando();
+        $.ajax({
+            url: '/colegiotest/inscripciones/GetAfiliado',
+            method: 'POST',
+            data: { nroAfiliado: nro },
+            dataType: 'json',
+            success: function (data) {
+                OcultarCargando();
+                $(".selPersona option:not([value='-1'])").remove();
+                if (data.success == true) {
+                    personas = data.datos;                  
+
+                    if (data.encontrado) {                        
+                        $.each(personas, function (i, p) {
+                            $('.selPersona').append($('<option>', {
+                                value: i,
+                                text: (i == 0 ? "[AFILIADO] " : "[FAMILIAR] ") + p.nombre + " " + p.apellido
+                            }));
+                        });
+                        if (personas.length == 1) {
+                            $('.selPersona').val(0).trigger("change");
+                        }
+                        var index = ObtenerIndexDePersonaPorNroAfiliado($("#NroAfiliado").val());
+                        $('.selPersona').val(index.toString());
+                        CargarDatosPersona(index);
+                    }
+                    else {
+                        $("#NroAfiliado").val("");
+                        if (esStartup) {
+                            Mensajes.MostrarOK("La persona no es más afiliada.");
+                        }
+                        else {
+                            Mensajes.MostrarOK("No se encontró el afiliado.");
+                        }
+                        $('.selPersona').append($('<option>', {
+                            value: "-2",
+                            text: "No afiliada"
+                        }));
+                        $('.selPersona').val("-2");
+                        $("#Nombre").focus();
+                    }
+                }
+                else {
+                    Mensajes.MostrarError(data.error);
+                }
+                $(".selPersona").trigger("chosen:updated");
+                $(".selPersona").trigger("chosen:activate");
+            }
+        });
+    }
+
+    function ObtenerIndexDePersonaPorNroAfiliado(nroAfiliado) {
+        var index = -1;
+        $.each(personas, function (i, p) {
+            if (nroAfiliado == p.numeroAfiliado) {
+                index = i;
+                return;
+            }
+        });
+        return index;
+    }
+
+    function ObtenerRequisitos(carreraCursoId) {
+    MostrarCargando();
+    $.ajax({
+        url: '/colegiotest/inscripciones/GetRequisitosPorCarreraCurso',
+        method: 'POST',
+        data: { carreraCursoId: carreraCursoId },
+        dataType: 'json',
+        success: function (data) {
+            OcultarCargando();
+            var html = "";
+            var newHeight = "35px";
+            if (data.success == true) {
+                if (data.requisitos.length > 1)
+                    newHeight = (data.requisitos.length * 32).toString() + "px";
+                $.each(data.requisitos, function (i, r) {
+                    html += '<input type="checkbox" class="chkEntregaDoc" requisitoId="' + r.id + '" ' + (RequisitoEntregado(r.id) ? "checked=checked" : "") + ' />&nbsp;<label><b>' + r.value + '</b></label><br/>';
+                });
+            }
+            else {
+                Mensajes.MostrarError(data.error);
+            }
+            $(".divDocumentacion").html(html);
+            $($(".divDocumentacion").parents("div")[0]).find("div").height(newHeight);
+        }
+    });
+}
+</script>

@@ -1,0 +1,87 @@
+﻿<ul class="nav navbar-nav">
+    <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-graduation-cap" aria-hidden="true"></i>&nbsp;&nbsp;Carreras / Cursos <span class="caret"></span></a>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+            <li class="dropdown-submenu">
+                <a href="javascript:AbrirModalCarrerasCursos()">Nueva</a>
+            </li>
+            <li class="dropdown-submenu">
+                <a href="/colegiotest/carrerascursos/Index">Ver todas</a>
+            </li>
+            <li class="divider"></li>
+            <li class="dropdown-submenu">
+                <a href="/colegiotest/requisitos/Index">Administrar requisitos</a>
+            </li>
+        </ul>
+    </li>
+
+    @* <LI> ITEM AL DE _MenuTop.cshtml *@
+    <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="fa fa-address-card"></span>&nbsp;&nbsp;Inscripciones <span class="caret"></span></a>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+            <li class="dropdown-submenu">
+                <a href="javascript:AbrirModalInscripciones()">Nueva</a>
+            </li>
+            <li class="dropdown-submenu">
+                <a href="/colegiotest/inscripciones/Index">Ver todas</a>
+            </li>
+            @*<li class="divider"></li>
+            <li class="dropdown-submenu">
+                <a href="/colegiotest/cicloslectivos">Administrar ciclos lectivos</a>
+            </li>*@
+        </ul>
+    </li>
+    <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-briefcase"></span>&nbsp;&nbsp;Cobranzas <span class="caret"></span></a>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+            <li class="dropdown-submenu">
+                @*<a href="javascript:AbrirModalCobranza()">Nueva</a>*@
+                <a href="/colegiotest/cobranzas">Ver todas</a>
+            </li>
+        </ul>
+    </li>
+    <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="fa fa-balance-scale"></span>&nbsp;&nbsp;Gastos <span class="caret"></span></a>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+            <li class="dropdown-submenu">
+                <a id="NuevoGastoNavBar" href="javascript:AbrirModalGastos()">Nuevo</a>
+            </li>
+            <li class="dropdown-submenu">
+                <a href="/colegiotest/gastos">Ver todos</a>
+            </li>
+        </ul>
+    </li>
+    <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="fa fa-dollar"></span>&nbsp;&nbsp;Movimientos <span class="caret"></span></a>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+            <li class="dropdown-submenu">
+                <a href="/colegiotest/movimientos">Ver todos los movimientos</a>
+            </li>
+        </ul>
+    </li>
+    @* FIN <LI> ITEM AL DE _MenuTop.cshtml *@
+</ul>
+<ul class="nav navbar-nav navbar-right">
+    <li class="dropdown dropdown-user">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            &nbsp;<span class="caret"></span>
+            <div class="userData">
+                <span class="userName">@(((Natom.ATSA.Colegio.Models.Usuario)ViewBag.Usuario).Email)</span>
+                <span class="bizName">@(((Natom.ATSA.Colegio.Models.Usuario)ViewBag.Usuario).Nombre)</span>
+            </div>
+        </a>
+        <ul class="dropdown-menu">
+            <li><a href="/colegiotest/home/Logout">Salir del sistema</a></li>
+        </ul>
+    </li>
+</ul>
+
+<div id="divModalCarrerasCursos">
+
+</div>
+<div id="divModalInscripciones">
+
+</div>
+<div id="divModalGastos">
+
+</div>

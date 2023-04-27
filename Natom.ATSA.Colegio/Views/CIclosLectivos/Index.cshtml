@@ -1,0 +1,44 @@
+﻿
+@{
+    /**/
+
+    ViewBag.Title = "Administrar ciclos lectivos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@Html.Hidden("FiltroEstado")
+<style type="text/css">
+    #modalRendicionDetalle .modal-dialog {
+        width: 900px !important;
+    }
+</style>
+<div class="row" style="display:inline-block;width:100%">
+    <div class="col-md-8">
+        <h2>Administrar ciclos lectivos</h2>
+    </div>
+    <div class="col-md-4">
+        <a class="btn btn-success pull-right" style="margin-right:-30px;margin-top:12px;" id="NuevoCicloLectivo">Nuevo</a>
+    </div>
+</div>
+<br />
+<table width="100%" id="tbl" class="table table-condensed">
+    <thead>
+        <tr>
+            <th>
+                Descripción
+            </th>
+            <th>
+                Fecha Inicio
+            </th>
+            <th>
+                Fecha Fin
+            </th>
+            <th>
+                Estado
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+</table>
+<div id="divModal">
+</div>
+<script src="~/Resources/js/cicloslectivos/Index.min.js"></script>

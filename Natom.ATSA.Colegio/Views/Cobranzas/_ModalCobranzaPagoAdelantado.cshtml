@@ -1,0 +1,338 @@
+﻿@using Natom.ATSA.Colegio.Models
+@model CobranzaPagoAdelantado
+
+<script src="~/Resources/components/bootstrap-3-typeahead/bootstrap3-typeahead.min.js"></script>
+<style type="text/css">
+    label.pagado {
+        color: red;
+    }
+</style>
+
+@Html.Hidden("MontoMensual")
+@Html.Hidden("MontoMatricula")
+
+<div id="modalCobranza" class="modal fade" role="dialog">
+    <div class="modal-dialog" style="width:900px">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title" style="        color: black !important"><b>Nueva Cobranza - Pago adelantado</b></h4>
+            </div>
+            @Html.HiddenFor(m => m.InscripcionId, new { id = "modalinscripcionid" })
+            <div class="modal-body">
+                <div class="row" style="padding:0px 15px 0px 15px;">
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <label>Nombre y Apellido</label>
+                            <input type="text" class="form-control" id="paNombreYApellido" value="" />
+                        </div>
+                    </div>
+                    <div class="col-xs-3">
+                        <div class="form-group">
+                            <label>DNI</label>
+                            <input type="text" class="form-control" id="paDNI" readonly value="" />
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <label>Carrera / Curso</label>
+                            <input type="text" class="form-control" id="paCarreraCurso" readonly value="" />
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <label>Ciclo lectivo</label>
+                            <select size="1" class="form-control" disabled id="anioCicloLectivo">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label>Meses</label><label style="float:right; color:red; font-size: 11px; margin-top: 5px;">NOTA: (*) ES MES PAGADO</label>
+                            <div class="form-control" style="height:173px;">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input type="checkbox" class="chkPaMes" value="1" esMatricula />&nbsp;<label value="1">Matricula</label><br />
+                                        <input type="checkbox" class="chkPaMes" value="2" />&nbsp;<label value="2">Febrero</label><br />
+                                        <input type="checkbox" class="chkPaMes" value="3" />&nbsp;<label value="3">Marzo</label><br />
+                                        <input type="checkbox" class="chkPaMes" value="4" />&nbsp;<label value="4">Abril</label><br />
+                                        <input type="checkbox" class="chkPaMes" value="5" />&nbsp;<label value="5">Mayo</label><br />
+                                        <input type="checkbox" class="chkPaMes" value="6" />&nbsp;<label value="6">Junio</label><br />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="checkbox" class="chkPaMes" value="7" />&nbsp;<label value="7">Julio</label><br />
+                                        <input type="checkbox" class="chkPaMes" value="8" />&nbsp;<label value="8">Agosto</label><br />
+                                        <input type="checkbox" class="chkPaMes" value="9" />&nbsp;<label value="9">Septiembre</label><br />
+                                        <input type="checkbox" class="chkPaMes" value="10" />&nbsp;<label value="10">Octubre</label><br />
+                                        <input type="checkbox" class="chkPaMes" value="11" />&nbsp;<label value="11">Noviembre</label><br />
+                                        <input type="checkbox" class="chkPaMes" value="12" />&nbsp;<label value="12">Diciembre</label><br />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-2">
+                        <div class="form-group">
+                            <label>Monto</label>
+                            <input type="text" class="form-control" id="txtMonto" name="txtMonto" value="$ 0" />
+                        </div>
+                    </div>
+                    <div class="col-xs-3 col-xs-offset-3">
+                        <div class="form-group">
+                            <label>Recibo</label>
+                            <input type="text" class="form-control" id="txtObservaciones" name="txtObservaciones" value="" />
+                        </div>
+                    </div>
+                    <div class="col-xs-2">
+                        <div class="form-group">
+                            <label>Efectivo</label>
+                            <div class="form-control">
+                                <input type="checkbox" id="chkEfectivo" checked />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" style="float:left;">Cancelar</button>
+                <button type="button" onclick="Grabar()" class="btn btn-success" id="btnCargar" style="float:right;">Cargar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var inscripciones = {};
+    var importeDefault = null;
+    var importeMatricula = null;
+    $(document).ready(function () {
+        $("#CarreraCursoTipoId").chosen();
+        $("#anioCicloLectivo").chosen();
+
+        $("#anioCicloLectivo").change(function () {
+            ObtenerDetalleCobranzaDeInscripcion($("#modalinscripcionid").val(), $("#anioCicloLectivo").val());
+        });
+
+        $(".chkPaMes").change(function () {
+            var importeMensual = importeDefault == null
+                ? parseFloat($("#MontoMensual").val().replace(",", "."))
+                : importeDefault;
+            var importeMatricula = importeMatricula == null
+                ? parseFloat($("#MontoMatricula").val().replace(",", "."))
+                : importeMatricula;
+
+            var checkeados = $(".chkPaMes:checked:not([disabled]):not([esMatricula])").length;
+
+            var totalMeses = importeMensual * checkeados;
+            var totalMatricula = $(".chkPaMes[esMatricula]:checked:not([disabled])").length == 1 ? importeMatricula : 0;
+
+            var total = FormatearAMoneda(totalMeses + totalMatricula);
+            $("#txtMonto").val(total);
+        });
+
+        $('#paNombreYApellido').typeahead({
+            minLength: 3,
+            items: 20,
+            matcher: function (item) { return true; },
+            source: function (query, process) {
+                prestadores = {};
+
+                $.ajax({
+                    type: "POST",
+                    url: '/colegiotest/cobranzas/ObtenerInscripcionesTypeAhead',
+                    data: JSON.stringify({
+                        inscripciones: query
+                    }),
+                    dataType: "json",
+                    contentType: "application/json",
+                    success: function (data) {
+                        objects = TypeAhead.constructMap(data.datos, inscripciones);
+                        process(objects);
+                    }
+                });
+            },
+            updater: function (item, dom) {
+                var selected = inscripciones[item];
+                if (selected.esAfiliado) {
+                    Mensajes.MostrarError("La persona seleccionada es Afiliado.");
+                    setTimeout(function () {
+                        $("#paNombreYApellido").val("").focus();
+                    }, 50);
+                    return;
+                }
+
+                $("#modalinscripcionid").val(selected.id);
+                $("#paDNI").val(selected.dni);
+                $("#paCarreraCurso").val(selected.carreraCurso);
+                /*$("#paCicloLectivo").val(selected.cicloLectivo);*/
+
+                setTimeout(function () {
+                    $("#paNombreYApellido").val(selected.apyn);
+                }, 50);
+
+                ObtenerCiclosLectivos(selected.id);
+
+                MostrarNotyDocsPendientesArribaIzq();
+
+                return item;
+            }
+        });
+    });
+
+    function FormatearAMoneda(valor, moneda) {
+        if (moneda == undefined) {
+            moneda = "$";
+        }
+        return moneda + " " + valor.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&~').replace(".", ",").replace(new RegExp('~', 'g'), '.');
+    }
+
+    function ObtenerDetalleCobranzaDeInscripcion(inscripcionId, anio) {
+        $.ajax({
+            url: '/colegiotest/cobranzas/ObtenerDetalleCobranzaInscripcion',
+            method: 'POST',
+            data: { inscripcionId: inscripcionId, anio: anio },
+            dataType: 'json',
+            success: function (data) {
+                $(".chkPaMes").removeAttr("disabled").prop("checked", false);
+                $(".chkPaMes:last").trigger("change");
+                $("label.pagado").removeClass("pagado");
+
+                if (data.success == true) {
+                    $.each(data.mesesPagos, function (i, mes) {
+                        $(".chkPaMes[value='" + mes + "']").prop("checked", true).attr("disabled", "disabled");
+                        $("label[value='" + mes + "']").addClass("pagado");
+                    });
+                    $.each(data.mesesNoCobrables, function (i, mes) {
+                        $(".chkPaMes[value='" + mes + "']").attr("disabled", "disabled");
+                    });
+                    importeDefault = data.importeDefault;
+                    importeMatricula = data.importeMatricula;
+                }
+                else {
+                    Mensajes.MostrarError(data.error);
+                }
+            }
+        });
+    }
+
+    function ObtenerCiclosLectivos(inscripcionId) {
+        $.ajax({
+            url: '/colegiotest/cobranzas/ObtenerCiclosLectivos',
+            method: 'POST',
+            data: { inscripcionId: inscripcionId },
+            dataType: 'json',
+            success: function (data) {
+                $('#anioCicloLectivo option').remove();
+                if (data.success == true) {
+                    $.each(data.data, function (i, ciclo) {
+                        $('#anioCicloLectivo').removeAttr("disabled");
+                        $('#anioCicloLectivo').append($('<option>', {
+                            value: ciclo.anio,
+                            text: ciclo.descripcion,
+                            selected: ciclo.selected
+                        }));
+                    });
+                }
+                else {
+                    Mensajes.MostrarError(data.error);
+                }
+                $('#anioCicloLectivo').trigger("chosen:updated");
+                $("#anioCicloLectivo").trigger("change");
+            }
+        });
+    }
+
+    function ObtenerDeMoneda(valor) {
+        var data = valor.split(" ");
+        var moneda = undefined;
+        valor = 0;
+
+        if (data.length == 2) {
+            moneda = data[0];
+            valor = data[1].replace(/\./g, '').replace(",", ".");
+        }
+        else {
+            valor = data[0].replace(/\./g, '').replace(",", ".");
+        }
+
+        return {
+            moneda: moneda,
+            valor: parseFloat(valor)
+        };
+    }
+
+    function Grabar() {
+        var inscripcionId = $("#modalinscripcionid").val();
+        var monto = ObtenerDeMoneda($("#txtMonto").val()).valor;
+        var observaciones = $("#txtObservaciones").val();
+        var anio = parseInt($("#anioCicloLectivo").val());
+        var meses = $(".chkPaMes:checked:not([disabled])").map(function () { return parseInt($(this).attr("value")); }).toArray();
+
+        if (inscripcionId == "0") {
+            Mensajes.MostrarError("Debes seleccionar al alumno.");
+            $("#paNombreYApellido").focus();
+            return;
+        }
+
+        if (isNaN(anio)) {
+            Mensajes.MostrarError("Debes seleccionar un Ciclo Lectivo.");
+            $("#anioCicloLectivo").trigger("chosen:activate");
+            return;
+        }
+
+        if (isNaN(monto) || monto == 0) {
+            Mensajes.MostrarError("Monto inválido.");
+            return;
+        }
+
+        if (meses.length == 0) {
+            Mensajes.MostrarError("Debes seleccionar al menos un mes.");
+            return;
+        }
+
+        MostrarCargando();
+        $.ajax({
+            url: '/colegiotest/cobranzas/GrabarPagoAdelantado',
+            method: 'POST',
+            data: { inscripcionId: inscripcionId, meses: meses, anio: anio, monto: monto, observaciones: observaciones, efectivo: $("#chkEfectivo").is(":checked") },
+            dataType: 'json',
+            success: function (data) {
+                if (data.success == true) {
+                    window.open('/colegiotest/cobranzas/ImprimirReciboDePago?id=' + data.cobranzasId[0], "_blank");
+                    location.href = '/colegiotest/cobranzas/Index';
+                }
+                else {
+                    Mensajes.MostrarError(data.error);
+                    OcultarCargando();
+                }
+            }
+        });
+    }
+
+    function MostrarNotyDocsPendientesArribaIzq() {
+        var id = $("#modalinscripcionid").val();
+        $.ajax({
+            url: '/colegiotest/inscripciones/ObtenerDocumentacionFaltantePorInscripcion',
+            method: 'POST',
+            data: { inscripcionId: id },
+            dataType: 'json',
+            success: function (data) {
+                if (data.success == true) {
+                    if (data.pendientes.length > 0) {
+                        var html = "<h4>Documentación pendiente de entregar:</h4>";
+                        html += "<ul>";
+                        $.each(data.pendientes, function (i, p) {
+                            html += "<li>" + p.value + "</li>";
+                        });
+                        html += "</ul>";
+                        Mensajes.MostrarNotificacionIzquierda(html, "error");
+                    }
+                }
+                else {
+                    Mensajes.MostrarError(data.error);
+                }
+            }
+        });
+    }
+
+</script>

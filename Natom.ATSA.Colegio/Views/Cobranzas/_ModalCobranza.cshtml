@@ -1,0 +1,157 @@
+﻿@using Natom.ATSA.Colegio.Models
+@model Cobranza
+
+<div id="modalCobranza" class="modal fade" role="dialog">
+    <div class="modal-dialog" style="width:900px">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title" style="color:black!important"><b>Nueva Cobranza</b></h4>
+            </div>
+            @Html.HiddenFor(m => m.InscripcionId, new { id = "modalinscripcionid" })
+            @Html.HiddenFor(m => m.Mes)
+            @Html.HiddenFor(m => m.Anio)
+            <div class="modal-body">
+                <div class="row" style="padding:0px 15px 0px 15px;">
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <label>Nombre y Apellido</label>
+                            <input type="text" class="form-control" readonly value="@ViewBag.NombreYApellido" />
+                        </div>
+                    </div>
+                    <div class="col-xs-3">
+                        <div class="form-group">
+                            <label>DNI</label>
+                            <input type="text" class="form-control" readonly value="@ViewBag.DNI" />
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <label>Carrera / Curso</label>
+                            <input type="text" class="form-control" readonly value="@ViewBag.CarreraCurso" />
+                        </div>
+                    </div>
+                    @*<div class="col-xs-6">
+                        <div class="form-group">
+                            <label>Ciclo lectivo</label>
+                            <input type="text" class="form-control" readonly value="@ViewBag.CicloLectivo" />
+                        </div>
+                    </div>*@
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <label>Ciclo lectivo</label>
+                            <select size="1" class="form-control" disabled id="anioCicloLectivo">
+                                @foreach (var ciclo in ViewBag.CiclosLectivos as List<CicloLectivoCalculado>)
+                                {
+                                    if (ciclo.Anio == Model.Anio)
+                                    {
+                                        <option value="@ciclo.Anio">@ciclo.Descripcion</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-xs-2">
+                        <div class="form-group">
+                            <label>Período</label>
+                            <input type="text" class="form-control" readonly value="@ViewBag.Periodo" />
+                        </div>
+                    </div>
+                    <div class="col-xs-2">
+                        <div class="form-group">
+                            <label>Monto</label>
+                            <input type="text" class="form-control" id="txtMonto" name="txtMonto" value="$ @ViewBag.MontoMensual" />
+                        </div>
+                    </div>
+                    <div class="col-xs-3 col-xs-offset-3">
+                        <div class="form-group">
+                            <label>Recibo</label>
+                            <input type="text" class="form-control" id="txtObservaciones" name="txtObservaciones" value="" />
+                        </div>
+                    </div>
+                    <div class="col-xs-2">
+                        <div class="form-group">
+                            <label>Efectivo</label>
+                            <div class="form-control">
+                                <input type="checkbox" id="chkEfectivo" checked />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" style="float:left;">Cancelar</button>
+                <button type="button" onclick="Grabar()" class="btn btn-success" id="btnCargar" style="float:right;">Cargar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#CarreraCursoTipoId").chosen();
+        $("#anioCicloLectivo").chosen();
+        $("#TipoDuracionId").chosen();
+        $("#Duracion").ForceNumericOnly();
+
+        MostrarNotyDocsPendientesArribaIzq();
+    });
+
+    function Grabar() {
+        var inscripcionId = $("#modalinscripcionid").val();
+        var mes = $("#Mes").val();
+        var anio = $("#Anio").val();
+        var monto = parseFloat($("#txtMonto").val().replace(" ", "").replace("$", "").replace(",", "."));
+        var observaciones = $("#txtObservaciones").val();
+
+        if (isNaN(monto)) {
+            Mensajes.MostrarError("Monto inválido.");
+            return;
+        }
+
+        MostrarCargando();
+        $.ajax({
+            url: '/colegiotest/cobranzas/Grabar',
+            method: 'POST',
+            data: { inscripcionId: inscripcionId, mes: mes, anio: anio, monto: monto.toFixed(2).replace(".", ","), observaciones: observaciones, efectivo: $("#chkEfectivo").is(":checked") },
+            dataType: 'json',
+            success: function (data) {
+                if (data.success == true) {
+                    window.open('/colegiotest/cobranzas/ImprimirReciboDePago?id=' + data.id, "_blank");
+                    location.href = '/colegiotest/cobranzas/Index';
+                }
+                else {
+                    Mensajes.MostrarError(data.error);
+                    OcultarCargando();
+                }
+            }
+        });
+    }
+
+    function MostrarNotyDocsPendientesArribaIzq() {
+        var id = $("#modalinscripcionid").val();
+        $.ajax({
+            url: '/colegiotest/inscripciones/ObtenerDocumentacionFaltantePorInscripcion',
+            method: 'POST',
+            data: { inscripcionId: id },
+            dataType: 'json',
+            success: function (data) {
+                if (data.success == true) {
+                    if (data.pendientes.length > 0) {
+                        var html = "<h4>Documentación pendiente de entregar:</h4>";
+                        html += "<ul>";
+                        $.each(data.pendientes, function (i, p) {
+                            html += "<li>" + p.value + "</li>";
+                        });
+                        html += "</ul>";
+                        Mensajes.MostrarNotificacionIzquierda(html, "error");
+                    }
+                }
+                else {
+                    Mensajes.MostrarError(data.error);
+                }
+            }
+        });
+    }
+    
+</script>

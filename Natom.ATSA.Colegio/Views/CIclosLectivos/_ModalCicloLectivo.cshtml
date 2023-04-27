@@ -1,0 +1,305 @@
+﻿@model Natom.ATSA.Colegio.Models.CicloLectivo
+<link href="~/Resources/components/bootstrap-datepicker-3/bootstrap-datetimepicker.css" rel="stylesheet" />
+<script src="~/Resources/components/bootstrap-datepicker-3/moment.js"></script>
+<script src="~/Resources/components/bootstrap-datepicker-3/bootstrap-datetimepicker.js"></script>
+<style type="text/css">
+    #selComboMesDesde_chosen,
+    #selComboAnioDesde_chosen,
+    #selComboMesHasta_chosen,
+    #selComboAnioHasta_chosen {
+        width: 50% !important;
+    }
+</style>
+<div id="modalCicloLectivo" class="modal fade" role="dialog">
+    <div class="modal-dialog" style="width:900px;">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                @if (Model.CicloLectivoId > 0)
+                {
+                    <h4 class="modal-title" style="color:black!important">Editar ciclo lectivo</h4>
+                }
+                else
+                {
+                    <h4 class="modal-title" style="color:black!important">Nuevo ciclo lectivo</h4>
+                }
+            </div>
+            @Html.Hidden("Anulado")
+                <input type="hidden" name="CicloLectivoId" id="CicloLectivoId" value="@Model.CicloLectivoId" />
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-9">
+                            <div class="form-group">
+                                <label>Descripción</label>
+                                <input type="text" name="Descripcion" id="Descripcion" class="form-control" value="@Model.Descripcion" />
+                                <span id="ErrorDescripcion" style="display:none;color:red;">Completar campo.</span>
+                            </div>
+                        </div>
+                        <div class="col-xs-3">
+                            <div class="form-group">
+                                <label>Importe default ($)</label>
+                                <input type="text" name="Importe" id="Importe" class="form-control decimal" value="@Model.ImporteDefault.ToString().Replace(',', '.')" placeholder="-sin especificar-" />
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <h4><b>Período de cursada</b></h4>
+                        </div>
+                        <div class="col-xs-6">
+                            <h4><b>Período de inscripción</b></h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 form-group">
+                            <label>Inicio</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar" aria-hidden="true">
+                                    </span>
+                                </span>
+                                <input type="text" name="FechaInicio" id="FechaInicio" class="form-control" value="@(Model.FechaInicio.ToString().StartsWith("01/01/0001") ? string.Empty :  Model.FechaInicio.ToString("dd/MM/yyyy"))" />
+                            </div>
+                            <span id="ErrorFecha" style="display:none;color:red;">Completar campos.</span>
+                        </div>
+                        <div class="col-xs-3 form-group">
+                            <label>Fin</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar" aria-hidden="true">
+                                    </span>
+                                </span>
+                                <input type="text" name="FechaFin" id="FechaFin" class="form-control" value="@(Model.FechaFin.ToString().StartsWith("01/01/0001") ? string.Empty :  Model.FechaFin.ToString("dd/MM/yyyy"))" />
+                            </div>
+                        </div>
+                        <div class="col-xs-3 form-group">
+                            <label>Desde</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar" aria-hidden="true">
+                                    </span>
+                                </span>
+                                <input type="text" name="InscripcionHabilitadaDesde" id="InscripcionHabilitadaDesde" class="form-control" value="@(Model.InscripcionHabilitadaDesde.ToString().StartsWith("01/01/0001") ? string.Empty :  Model.InscripcionHabilitadaDesde.ToString("dd/MM/yyyy"))" />
+                            </div>
+                            <span id="ErrorInscripcion" style="display:none;color:red;">Completar campos.</span>
+                        </div>
+                        <div class="col-xs-3 form-group">
+                            <label>Hasta</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar" aria-hidden="true">
+                                    </span>
+                                </span>
+                                <input type="text" name="InscripcionHabilitadaHasta" id="InscripcionHabilitadaHasta" class="form-control" value="@(Model.InscripcionHabilitadaHasta.ToString().StartsWith("01/01/0001") ? string.Empty :  Model.InscripcionHabilitadaHasta.ToString("dd/MM/yyyy"))" style="margin-right:-15px;" />
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <h4><b>Período de cobranza</b></h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-4 form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <span aria-hidden="true">Desde</span>
+                                </span>
+                                <select id="selComboMesDesde">
+                                    <option value="-1">--</option>
+                                    <option value="1" @(Model.CobranzaInicioMes == 1 ? "selected" : "")>01</option>
+                                    <option value="2" @(Model.CobranzaInicioMes == 2 ? "selected" : "")>02</option>
+                                    <option value="3" @(Model.CobranzaInicioMes == 3 ? "selected" : "")>03</option>
+                                    <option value="4" @(Model.CobranzaInicioMes == 4 ? "selected" : "")>04</option>
+                                    <option value="5" @(Model.CobranzaInicioMes == 5 ? "selected" : "")>05</option>
+                                    <option value="6" @(Model.CobranzaInicioMes == 6 ? "selected" : "")>06</option>
+                                    <option value="7" @(Model.CobranzaInicioMes == 7 ? "selected" : "")>07</option>
+                                    <option value="8" @(Model.CobranzaInicioMes == 8 ? "selected" : "")>08</option>
+                                    <option value="9" @(Model.CobranzaInicioMes == 9 ? "selected" : "")>09</option>
+                                    <option value="10" @(Model.CobranzaInicioMes == 10 ? "selected" : "")>10</option>
+                                    <option value="11" @(Model.CobranzaInicioMes == 11 ? "selected" : "")>11</option>
+                                    <option value="12" @(Model.CobranzaInicioMes == 12 ? "selected" : "")>12</option>
+                                </select>
+                                <select id="selComboAnioDesde">
+                                    @for (int i = 2020; i < DateTime.Now.Year + 1; i++)
+                                    {
+                                        <option value="@i" @(Model.CobranzaInicioAnio == i ? "selected" : "")>@i</option>
+                                    }
+                                </select>
+                            </div>
+                            <span id="ErrorCobranzaDesde" style="display:none;color:red;">Seleccionar campos.</span>
+                        </div>
+                        <div class="col-xs-4 form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <span aria-hidden="true">Hasta</span>
+                                </span>
+                                <select id="selComboMesHasta">
+                                    <option value="-1">--</option>
+                                    <option value="1" @(Model.CobranzaFinMes == 1 ? "selected" : "")>01</option>
+                                    <option value="2" @(Model.CobranzaFinMes == 2 ? "selected" : "")>02</option>
+                                    <option value="3" @(Model.CobranzaFinMes == 3 ? "selected" : "")>03</option>
+                                    <option value="4" @(Model.CobranzaFinMes == 4 ? "selected" : "")>04</option>
+                                    <option value="5" @(Model.CobranzaFinMes == 5 ? "selected" : "")>05</option>
+                                    <option value="6" @(Model.CobranzaFinMes == 6 ? "selected" : "")>06</option>
+                                    <option value="7" @(Model.CobranzaFinMes == 7 ? "selected" : "")>07</option>
+                                    <option value="8" @(Model.CobranzaFinMes == 8 ? "selected" : "")>08</option>
+                                    <option value="9" @(Model.CobranzaFinMes == 9 ? "selected" : "")>09</option>
+                                    <option value="10" @(Model.CobranzaFinMes == 10 ? "selected" : "")>10</option>
+                                    <option value="11" @(Model.CobranzaFinMes == 11 ? "selected" : "")>11</option>
+                                    <option value="12" @(Model.CobranzaFinMes == 12 ? "selected" : "")>12</option>
+                                </select>
+                                <select id="selComboAnioHasta">
+                                    @for (int i = 2020; i <= DateTime.Now.Year + 1; i++)
+                                    {
+                                        <option value="@i" @(Model.CobranzaFinAnio == i ? "selected" : "")>@i</option>
+                                    }
+                                </select>
+                            </div>
+                            <span id="ErrorCobranzaHasta" style="display:none;color:red;">Seleccionar campos.</span>
+                        </div>
+                        <div class="col-xs-1">
+
+                        </div>
+                        <div class="col-xs-3" style="display:none;">
+                            <div class="form-group" style="float:right;">
+                                <label for="Cerrado">Cerrado</label><br />
+                                @if (Model.Cerrado)
+                                {
+                                    <input type="checkbox" name="Cerrado" id="Cerrado" value="True" checked />
+                                }
+                                else
+                                {
+                                    <input type="checkbox" name="Cerrado" id="Cerrado" value="True" />
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" style="float:left;">Cancelar</button>
+                    <button type="button" class="btn btn-success" id="btnCargar" style="float:right;">Grabar</button>
+                </div>
+
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#selComboMesDesde, #selComboAnioDesde, #selComboMesHasta, #selComboAnioHasta").chosen();
+        $('#FechaInicio, #FechaFin, #InscripcionHabilitadaDesde, #InscripcionHabilitadaHasta').datetimepicker({
+            format: 'DD/MM/YYYY',
+            widgetPositioning: {
+                horizontal: 'auto',
+                vertical: 'auto'
+            }
+        });
+        $('.decimal').keypress(function (event) {
+            var charCode = (event.which) ? event.which : event.keyCode
+
+            if (
+                (charCode != 45 || $(this).val().indexOf('-') != -1) && // “-” CHECK MINUS, AND ONLY ONE.
+                (charCode != 46 || $(this).val().indexOf('.') != -1) && // “.” CHECK DOT, AND ONLY ONE.
+                (charCode < 48 || charCode > 57))
+                return false;
+
+            return true;
+
+        });
+        $("#btnCargar").on('click', function () {
+            var d = $("#Descripcion").val();
+            var fi = $("#FechaInicio").val();
+            var ff = $("#FechaFin").val();
+            var id = $("#InscripcionHabilitadaDesde").val();
+            var ih = $("#InscripcionHabilitadaHasta").val();
+            var cim = parseInt($("#selComboMesDesde").val());
+            var cfm = parseInt($("#selComboMesHasta").val());
+            var cia = parseInt($("#selComboAnioDesde").val());
+            var cfa = parseInt($("#selComboAnioHasta").val());
+            var error = false;
+
+            //Valido Descripcion
+            if (d.length > 0) {
+                $("#ErrorDescripcion").hide();
+            }
+            else {
+                $("#ErrorDescripcion").show();
+                error = true;
+            };
+            //Valido fecha
+            if (fi.length > 1 || ff.length > 1) {
+                $("#ErrorFecha").hide();
+            }
+            else {
+                $("#ErrorFecha").show();
+                error = true;
+            };
+            //Valido inscripcion
+            if (id.length > 1 || ih.length > 1) {
+                $("#ErrorInscripcion").hide();
+            }
+            else {
+                $("#ErrorInscripcion").show();
+                error = true;
+            };
+            //valido cobranza mes
+            if (cim > 0 && cia > 0) {
+                $("#ErrorCobranzaDesde").hide();
+            }
+            else {
+                $("#ErrorCobranzaDesde").show();
+                error = true;
+            }
+            //valido cobranza año
+            if (cfm > 0 && cfa > 0) {
+                $("#ErrorCobranzaHasta").hide();
+            }
+            else {
+                $("#ErrorCobranzaHasta").show();
+                error = true;
+            }
+            
+            if (!error) {
+                MostrarCargando();
+                $.ajax({
+                    url: '/colegiotest/cicloslectivos/Crear_EditarCicloLectivo',
+                    method: 'POST',
+                    data: { model: ObtenerObjeto() },
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.success == true) {
+                            location.href = '/colegiotest/cicloslectivos/Index';
+                        }
+                        else {
+                            Mensajes.MostrarError(data.error);
+                            OcultarCargando();
+                        }
+                    }
+                });
+            }
+        });
+    });
+
+    function ObtenerObjeto() {
+        var obj = {
+            CicloLectivoId: $("#CicloLectivoId").val(),
+            Descripcion: $("#Descripcion").val(),
+            ImporteDefault: $("#Importe").val().replace(".", ","),
+            FechaInicio: $("#FechaInicio").val(),
+            FechaFin: $("#FechaFin").val(),
+            InscripcionHabilitadaDesde: $("#InscripcionHabilitadaDesde").val(),
+            InscripcionHabilitadaHasta: $("#InscripcionHabilitadaHasta").val(),
+            CobranzaInicioMes: $("#selComboMesDesde").val(),
+            CobranzaInicioAnio: $("#selComboAnioDesde").val(),
+            CobranzaFinMes: $("#selComboMesHasta").val(),
+            CobranzaFinAnio: $("#selComboAnioHasta").val(),
+            Cerrado: $("#Cerrado").is(":checked"),
+            Anulado: $("#Anulado").val()
+        };
+        
+        return obj;
+    }
+</script>

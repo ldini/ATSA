@@ -1,0 +1,95 @@
+﻿@model Natom.ATSA.Colegio.Models.Gasto
+
+<div id="modalGastos" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                @if (Model.GastoId > 0)
+                {
+                    <h4 class="modal-title" style="color:black!important">Editar Ingreso / Egreso</h4>
+                }
+                else
+                {
+                    <h4 class="modal-title" style="color:black!important">Nuevo Ingreso / Egreso</h4>
+                }
+            </div>
+            @using (Html.BeginForm("Crear_EditarGasto", "Gastos", FormMethod.Post, new { @id = "FormGasto" }))
+            {
+                <input type="hidden" name="GastoId" id="GastoId" value="@Model.GastoId" />
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label>Concepto</label>
+                                <input type="text" name="Concepto" id="Concepto" class="form-control" value="@Model.Concepto" />
+                                <span id="ErrorConcepto" style="display:none;color:red;">Debe completar este campo.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <div class="form-group">
+                                <label>Tipo</label>
+                                <select id="Tipo" name="Tipo" size="1" class="form-control">
+                                    <option value="1">INGRESO</option>
+                                    <option value="-1">EGRESO</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xs-9">
+                            <div class="form-group">
+                                <label>Monto</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <span aria-hidden="true">
+                                            $
+                                        </span>
+                                    </span>
+                                    <input type="text" step="0.01" name="Monto" id="Monto" class="form-control" value="@Model.Monto" />
+                                </div>
+                                <span id="ErrorMonto" style="display:none;color:red;">Debe completar este campo.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" style="float:left;">Cancelar</button>
+                    <button type="submit" class="btn btn-success" id="btnCargar" style="float:right;">Registrar</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#Tipo").chosen();
+
+        $("#FormGasto").on('submit', function () {
+            var c = $("#Concepto").val();
+            var m = $("#Monto").val();
+            var error = 0;  
+            if (c.length > 1) {
+                $("#ErrorConcepto").hide();
+            }
+            else {
+                $("#ErrorConcepto").show();
+                error++;
+                return false;
+            };
+            if (parseFloat(m.replace(",", ".")) > 0) {
+                $("#ErrorMonto").hide();
+            }
+            else {
+                $("#ErrorMonto").show();
+                error++;
+                return false;
+            }
+            if (error == 0)
+            {
+                return true
+            }
+        });
+    });
+</script>

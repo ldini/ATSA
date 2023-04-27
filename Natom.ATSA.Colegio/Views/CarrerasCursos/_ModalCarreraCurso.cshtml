@@ -1,0 +1,203 @@
+﻿@using Natom.ATSA.Colegio.Models
+@model CarreraCurso
+
+<script src="~/Resources/components/bootstrap-3-typeahead/bootstrap3-typeahead.min.js"></script>
+<div id="modalCarreraCursos" class="modal fade" role="dialog">
+    <div class="modal-dialog" style="width:900px">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                @if (Model.CarreraCursoId > 0)
+                {
+                    <h4 class="modal-title" style="color:black!important"><b>Editar Carrera / Curso</b></h4>
+                }
+                else
+                {
+                    <h4 class="modal-title" style="color:black!important"><b>Nueva Carrera / Curso</b></h4>
+                }
+            </div>
+            <input type="hidden" name="CarreraCursoId" id="CarreraCursoId" value="@Model.CarreraCursoId" />
+            <div class="modal-body">
+                <div class="row" style="padding:0px 15px 0px 15px;">
+                    <div class="col-xs-6">
+                        <div class="row">
+                            <div class="form-group">
+                                <label>Título</label>
+                                <input type="text" name="Titulo" id="Titulo" class="form-control" maxlength="100" value="@Model.Titulo" />
+                                <span id="ErrorTitulo" style="display:none;color:red;">Debe completar Título.</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <label>Tipo</label>
+                                <select class="form-control" name="CarreraCursoTipoId" id="CarreraCursoTipoId">
+                                    @foreach (var t in ViewBag.Tipo as List<CarreraCursoTipo>)
+                                    {
+                                        <option value="@t.CarreraCursoTipoId" @(Model.CarreraCursoTipoId == t.CarreraCursoTipoId ? "selected" : string.Empty)>@t.Descripcion</option>
+                                    }
+                                </select>
+                                <span id="ErrorTipo" style="display:none;color:red;">Debe seleccionar Tipo.</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Tipo de duración</label>
+                                <select class="form-control" name="TipoDuracionId" id="TipoDuracionId">
+                                    @foreach (var d in ViewBag.Duracion as List<TipoDuracion>)
+                                    {
+                                        <option value="@d.TipoDuracionId" @(Model.TipoDuracionId == d.TipoDuracionId ? "selected" : string.Empty)>@d.Descripcion</option>
+                                    }
+                                </select>
+                                <span id="ErrorDuracionId" style="display:none;color:red;">Debe seleccionar Tipo de duración.</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <label>Duración</label>
+                                <input type="text" name="Duracion" id="Duracion" class="form-control" value="@Model.Duracion" />
+                                <span id="ErrorDuracion" style="display:none;color:red;">Debe completar Duración.</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <label>Descripción</label>
+                                <textarea name="Descripcion" id="Descripcion" class="form-control" maxlength="500">@Model.Descripcion</textarea>
+                                <span id="ErrorDescripcion" style="display:none;color:red;">Debe completar Descripción.</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <label>Horarios</label>
+                                <input type="text" name="Horarios" id="Horarios" class="form-control" maxlength="200" value="@Model.Horarios" />
+                                <span id="ErrorHorarios" style="display:none;color:red;">Debe completar Horarios.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <label>Requisitos</label>
+                            <ul style="list-style:none;border:1px solid lightgrey;max-height:200px;overflow-y:auto;" class="listRequisitos">
+                                @foreach (var r in ViewBag.Requisitos as List<Requisito>)
+                                {
+                                    <li><input type="checkbox" class="checkRequisitos" data-id="@r.RequisitoId" @(Model.Requisitos.Any(x => x.RequisitoId.Equals(r.RequisitoId)) == true ? "checked" : string.Empty) /> @r.Descripcion</li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" style="float:left;">Cancelar</button>
+                <button type="button" onclick="Grabar()" class="btn btn-success" id="btnCargar" style="float:right;">Cargar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#CarreraCursoTipoId").chosen();
+        $("#TipoDuracionId").chosen();
+        $("#Duracion").ForceNumericOnly();
+    });
+
+    function Grabar() {
+        var t = $("#Titulo").val();
+        var d = $("#Descripcion").val();
+        var duracion = $("#Duracion").val();
+        var duracionid = $("#TipoDuracionId").val();
+        var tipoid = $("#CarreraCursoTipoId").val();
+        var h = $("#Horarios").val();
+        var error = false;
+
+        if (t.length > 1) {
+            $("#ErrorTitulo").hide();
+        }
+        else {
+            $("#ErrorTitulo").show();
+            error = true;
+        }
+        if (d.length > 1) {
+            $("#ErrorDescripcion").hide();
+        }
+        else {
+            $("#ErrorDescripcion").show();
+            error = true;
+        }
+        if (parseInt(duracion) > 0) {
+            $("#ErrorDuracion").hide();
+        }
+        else {
+            $("#ErrorDuracion").show();
+            error = true;
+        }
+        if (parseInt(duracionid) > 0) {
+            $("#ErrorDuracionId").hide();
+        }
+        else {
+            $("#ErrorDuracionId").show();
+            error = true;
+        }
+        if (parseInt(tipoid) > 0) {
+            $("#ErrorTipo").hide();
+        }
+        else {
+            $("#ErrorTipo").show();
+            error = true;
+        }
+        if (h.length > 1) {
+            $("#ErrorHorarios").hide();
+        }
+        else {
+            $("#ErrorHorarios").show();
+            error = true;
+        }
+
+        if (error)
+            return false;
+
+
+        var fnGrabar = function () {
+            MostrarCargando();
+            $.ajax({
+                url: '/colegiotest/carrerascursos/Crear_EditarCarreraCurso',
+                method: 'POST',
+                data: { model: ObtenerObjeto() },
+                dataType: 'json',
+                success: function (data) {
+                    if (data.success == true) {
+                        location.href = '/colegiotest/carrerascursos/Index';
+                    }
+                    else {
+                        Mensajes.MostrarError(data.error);
+                        OcultarCargando();
+                    }
+                }
+            });
+        };
+
+        if ($(".checkRequisitos:checked").length == 0) {
+            Mensajes.MostrarSiNo("ATENCIÓN: No ha seleccionado ningún requisito. ¿Desea continuar?", fnGrabar);
+        }
+        else {
+            fnGrabar();
+        }
+    }
+
+    function ObtenerObjeto() {
+        var obj = {
+            CarreraCursoId: parseInt($("#CarreraCursoId").val()),
+            CarreraCursoTipoId: parseInt($("#CarreraCursoTipoId").val()),
+            Duracion: parseInt($("#Duracion").val()),
+            TipoDuracionId: parseInt($("#TipoDuracionId").val()),
+            Titulo: $("#Titulo").val(),
+            Horarios: $("#Horarios").val(),
+            Descripcion: $("#Descripcion").val(),
+            Requisitos: []
+        };
+
+        $(".checkRequisitos:checked").each(function (i, v) {
+            obj.Requisitos.push({ RequisitoId: $(this).attr('data-id'), CarreraCursoId: parseInt($("#CarreraCursoId").val()) });
+        });
+
+        return obj;
+    }
+</script>
