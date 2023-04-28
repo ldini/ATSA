@@ -283,7 +283,7 @@ namespace Natom.ATSA.Colegio.Controllers
 
             Func<ListarCobranzasResult, string> orderingFunction =
                 (c => dtParams.SortByColumnIndex == 0 ? c.Afiliado ?? "NO" : 
-                dtParams.SortByColumnIndex == 1 ? c.Nombre + " " + c.Apellido :
+                dtParams.SortByColumnIndex == 1 ? c.Apellido + " " + c.Nombre :
                 dtParams.SortByColumnIndex == 2 ? c.DNI.ToString() :
                 dtParams.SortByColumnIndex == 3 ? c.CarreraCurso.ToString() :
                 //dtParams.SortByColumnIndex == 4 ? c.Descripcion.ToString() :
@@ -309,7 +309,7 @@ namespace Natom.ATSA.Colegio.Controllers
             var result = from c in displayedCargas
                          select new object[] {
                                         c.Afiliado ?? "NO",
-                                        c.Nombre + " " + c.Apellido,
+                                        c.Apellido + " " + c.Nombre,
                                         c.DNI.ToString(),
                                         c.CarreraCurso.ToString(),
                                         cicloLectivoManager.CalcularCicloLectivo(c.InscripcionId, c.Anio), //c.Descripcion.ToString(),

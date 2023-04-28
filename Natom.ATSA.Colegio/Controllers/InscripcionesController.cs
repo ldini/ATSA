@@ -47,7 +47,7 @@ namespace Natom.ATSA.Colegio.Controllers
             
             Func<Inscripcion, string> orderingFunction =
                 (c => dtParams.SortByColumnIndex == 0 ? (c.Afiliado ?? "NO") :
-                dtParams.SortByColumnIndex == 1 ? c.Nombre + " " + c.Apellido :
+                dtParams.SortByColumnIndex == 1 ? c.Apellido + " " + c.Nombre :
                 dtParams.SortByColumnIndex == 2 ? c.DNI :
                 dtParams.SortByColumnIndex == 3 ? c.CarreraCurso.Titulo :
                 "");

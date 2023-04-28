@@ -115,7 +115,7 @@ namespace Natom.ATSA.Colegio.Controllers
             IEnumerable<Usuario> cargosFiltrados = manager.ObtenerUsuariosConFiltros(dtParams.Search);
 
             Func<Usuario, string> orderingFunction =
-                (c => dtParams.SortByColumnIndex == 0 ? (c.Nombre + " " + c.Apellido) :
+                (c => dtParams.SortByColumnIndex == 0 ? (c.Apellido + " " + c.Nombre) :
                     dtParams.SortByColumnIndex == 1 ? c.Email :
                     dtParams.SortByColumnIndex == 2 ? c.FechaHoraAlta.ToOADate().ToString().PadLeft(15, '0') :
                 "");
@@ -134,7 +134,7 @@ namespace Natom.ATSA.Colegio.Controllers
 
             var result = from c in displayedCargos
                          select new object[] {
-                             c.Nombre + " " + c.Apellido,
+                             c.Apellido + " " + c.Nombre,
                              c.Email,
                              String.Concat(c.FechaHoraAlta.ToString("dd/MM/yyyy HH:mm"), " hs"),
                              c.UsuarioId
