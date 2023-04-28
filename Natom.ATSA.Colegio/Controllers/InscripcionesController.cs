@@ -72,7 +72,7 @@ namespace Natom.ATSA.Colegio.Controllers
             var result = from c in displayedCargas
                          select new object[] {
                                 (c.Afiliado ?? "NO"),
-                                c.Nombre + " " + c.Apellido,
+                                c.Apellido + " " + c.Nombre,
                                 c.DNI,
                                 c.CarreraCurso.Titulo,
                                 cicloLectivoManager.CalcularCicloLectivoActual(c),
