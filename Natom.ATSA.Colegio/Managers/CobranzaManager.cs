@@ -61,7 +61,7 @@ namespace Natom.ATSA.Colegio.Managers
                     InscripcionId = aCobrar.InscripcionId,
                     Mes = aCobrar.Mes,
                     Monto = 0,
-                    Observaciones = "BONIFICADO POR SER AFILIADO."
+                    Observaciones = "BONIFICADO POR SER AFILIADO"
                 });
             }
             this.db.SaveChanges();
@@ -205,8 +205,8 @@ namespace Natom.ATSA.Colegio.Managers
         {
             return this.db.Inscripciones
                             .Include(i => i.CarreraCurso)
-                            .Where(i => ((i.Nombre + " " + i.Apellido).ToLower().Contains(inscripciones.ToLower())
-                                        || (i.Apellido + " " + i.Nombre).ToLower().Contains(inscripciones.ToLower()))
+                            .Where(i => ((i.Apellido + " " + i.Nombre).ToLower().Contains(inscripciones.ToLower())
+                                        || (i.Nombre + " " + i.Apellido).ToLower().Contains(inscripciones.ToLower()))
                                         && !i.BajaCarreraFecha.HasValue
                                         && !i.CarreraCurso.Anulado
                                         )

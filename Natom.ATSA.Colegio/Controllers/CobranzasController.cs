@@ -86,7 +86,7 @@ namespace Natom.ATSA.Colegio.Controllers
         private string GetMesesPagoAdelantado(CobranzaPagoAdelantado pagoAdelantado)
         {
             List<string> mesesPagos = new List<string>();
-            string[] meses = new string[] { "Matricula", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" };
+            string[] meses = new string[] {"Matricula","Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" };
             foreach (var cobranza in pagoAdelantado.Cobranzas)
             {
                 mesesPagos.Add(meses[cobranza.Mes - 1]);
@@ -149,7 +149,7 @@ namespace Natom.ATSA.Colegio.Controllers
             //ViewBag.CicloLectivo = inscripcion.CicloLectivo.Descripcion; //Comment
             ViewBag.CiclosLectivos = new CiclosLectivosManager().CalcularCiclosLectivos(inscripcion);
             ViewBag.Periodo = Mes == 1 ? "Matricula" : String.Format("{0}-{1}", Mes.ToString().PadLeft(2, '0'), Anio);
-            ViewBag.NombreYApellido = inscripcion.Nombre + " " + inscripcion.Apellido;
+            ViewBag.NombreYApellido = inscripcion.Apellido + " " + inscripcion.Nombre;
             ViewBag.DNI = inscripcion.DNI;
 
             string configValue = "";
