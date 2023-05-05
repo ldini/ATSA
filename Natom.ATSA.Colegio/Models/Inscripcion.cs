@@ -46,6 +46,10 @@ namespace Natom.ATSA.Colegio.Models
         public string TrabajoTelefono { get; set; }
         public string TrabajoEmail { get; set; }
 
+        public string CicloIngreso { get; set; }
+
         public List<InscripcionEntregaDocumentacion> RequisitosEntregados { get; set; }
+
+        
     }
 }

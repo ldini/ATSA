@@ -120,7 +120,7 @@
                                 <div class="form-group">
                                     <label>Ciclo lectivo</label>
                                     <select disabled class="form-control" name="CicloLectivoId" id="CicloLectivoId">
-                                        <option value="1">Seleccione Carrera</option>
+                                        <option value="@Model.CicloIngreso">Seleccione Carrera</option>
                                     </select>
                                     <span id="ErrorCicloLectivo" style="display:none;color:red;">Debe seleccionar el campo.</span>
                                 </div>
@@ -323,10 +323,10 @@
 
             if (carrera.tipo == "2") {
                 for (let i = 1; i <= carrera.duracion; i++)
-                    $("#CicloLectivoId").append("<option value='" + carrera.id + "'> Inscripcion a " + i + "ª año</option>");
+                    $("#CicloLectivoId").append("<option value='" + (i-1) + "'> Inscripcion a " + i + "ª año</option>");
             }
             else if (carrera.tipo == "1")
-                $("#CicloLectivoId").append("<option value='" + carrera.id + "'> Inscripcion a " + 1 + "ª año</option>");
+                $("#CicloLectivoId").append("<option value='" + (i-1) + "'> Inscripcion a " + 1 + "ª año</option>");
             else {
                 $("#CicloLectivoId").append("<option value='" + -1 + "'>Seleccione Carrera</option>");
                 $("#CicloLectivoId").prop("disabled", true);
@@ -359,6 +359,7 @@
             var afiliado = $("#NroAfiliado").val();
             var recibo = $("#Recibo").val();
             var error = false;
+            var ciclo = $("#CicloLectivoId").val();
 
             if ($(".selPersona").val() == "-1") {
                 Mensajes.MostrarError("Debes indicar 'Persona'.");
@@ -530,6 +531,7 @@
         $("#Edad").val(data.edad);
         $("#NroAfiliado").val(data.numeroAfiliado);
         $("#Email").focus();
+        $("#CicloIngreso").val(data.ciclo);
     }
 
     function RequisitoEntregado(requisitoId) {
@@ -571,6 +573,7 @@
             TrabajoLocalidad: $("#TrabajoLocalidad").val(),
             TrabajoTelefono: $("#TrabajoTelefono").val(),
             TrabajoEmail: $("#TrabajoEmail").val(),
+            CicloIngreso: $("#CicloLectivoId").val(),
             RequisitosEntregados: $(".chkEntregaDoc:checked").map(function () { return { RequisitoId: $(this).attr("requisitoId") } }).toArray()
         };
 

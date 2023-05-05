@@ -24,6 +24,24 @@ namespace Natom.ATSA.Colegio.Managers
             }
             else
             {
+                //PROBAR
+                //var ciclosStr = new List<string>() { "1er", "2do", "3er", "4to", "5to", "6to", "7mo", "8vo", "9no", "10mo", "", "", "", "", "" };
+
+                //var anioDesde = inscripcion.AltaFecha.Value.Year;
+                //int ingreso = 0;
+                //bool exito = int.TryParse(inscripcion.CicloIngreso, out ingreso);
+                //var anioHasta = inscripcion.AltaFecha.Value.Year + aniosDuracion - ingreso;
+                //var ciclo = ingreso;
+                //for (int anio = anioDesde; anio <= anioHasta && anio <= DateTime.Now.Year; anio++)
+                //{
+                //    ciclos.Add(new CicloLectivoCalculado
+                //    {
+                //        Descripcion = $"({anio}) {ciclosStr[ciclo]} año",
+                //        Anio = anio
+                //    });
+                //    ciclo++;
+                //}
+
                 var ciclosStr = new List<string>() { "1er", "2do", "3er", "4to", "5to", "6to", "7mo", "8vo", "9no", "10mo", "", "", "", "", "" };
                 var ciclo = 0;
                 var anioDesde = inscripcion.AltaFecha.Value.Year;
@@ -37,6 +55,7 @@ namespace Natom.ATSA.Colegio.Managers
                     });
                     ciclo++;
                 }
+
             }
             return ciclos;
         }
@@ -57,17 +76,29 @@ namespace Natom.ATSA.Colegio.Managers
             }
             else
             {
-                var ciclosStr = new List<string>() { "1er", "2do", "3er", "4to", "5to", "6to", "7mo", "8vo", "9no", "10mo", "", "", "", "", "" };
-                var anioDesde = inscripcion.AltaFecha.Value.Year;
-                var anioHasta = inscripcion.AltaFecha.Value.Year + aniosDuracion;
 
-                if (anioHasta < anio)
+                var ciclosStr = new List<string>() { "1er", "2do", "3er", "4to", "5to", "6to", "7mo", "8vo", "9no", "10mo", "", "", "", "", "" };      
+                int ingreso = 0;
+                bool exito = int.TryParse(inscripcion.CicloIngreso, out ingreso);
+
+                var ciclo = DateTime.Now.Year - inscripcion.AltaFecha.Value.Year + ingreso;
+                if (ciclo >= aniosDuracion)
                     return "COMPLETADO";
                 else
-                {
-                    var ciclo = anio - anioDesde;
                     return $"({anio}) {ciclosStr[ciclo]} año";
-                }
+
+
+                //var ciclosStr = new List<string>() { "1er", "2do", "3er", "4to", "5to", "6to", "7mo", "8vo", "9no", "10mo", "", "", "", "", "" };
+                //var anioDesde = inscripcion.AltaFecha.Value.Year;
+                //var anioHasta = inscripcion.AltaFecha.Value.Year + aniosDuracion;
+
+                //if (anioHasta < anio)
+                //    return "COMPLETADO";
+                //else
+                //{
+                //    var ciclo = anio - anioDesde;
+                //    return $"({anio}) {ciclosStr[ciclo]} año";
+                //}
             }
         }
 
@@ -84,16 +115,31 @@ namespace Natom.ATSA.Colegio.Managers
             else
             {
                 var ciclosStr = new List<string>() { "1er", "2do", "3er", "4to", "5to", "6to", "7mo", "8vo", "9no", "10mo", "", "", "", "", "" };
-                var anioDesde = inscripcion.AltaFecha.Value.Year;
-                var anioHasta = inscripcion.AltaFecha.Value.Year + aniosDuracion;
+                int ingreso = 0;
+                bool exito = int.TryParse(inscripcion.CicloIngreso, out ingreso);
 
-                if (anioHasta < DateTime.Now.Year)
+                var ciclo = DateTime.Now.Year - inscripcion.AltaFecha.Value.Year + ingreso;
+                if(ciclo >= aniosDuracion)
                     return "COMPLETADO";
                 else
-                {
-                    var ciclo = DateTime.Now.Year - anioDesde;
                     return $"Cursando {ciclosStr[ciclo]} año";
-                }
+
+
+
+                //var anioHasta = inscripcion.AltaFecha.Value.Year + aniosDuracion - ingreso;
+
+                //if (anioHasta < DateTime.Now.Year)
+                //    return "COMPLETADO";
+                //else
+                //{
+                //    var ciclo = DateTime.Now.Year - anioDesde + ingreso;
+                //    return $"Cursando {ciclosStr[ciclo]} año";
+                //}
+
+
+
+
+
             }
         }
 

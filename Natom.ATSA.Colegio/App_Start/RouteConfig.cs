@@ -15,8 +15,8 @@ namespace Natom.ATSA.Colegio
 
             routes.MapRoute(
                 name: "Default",
-                url: "{controller}/{action}/{id}",
-                //url: "colegiotest/{controller}/{action}/{id}",
+                //url:"{controller}/{action}/{id}",
+                url: "colegiotest/{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
             );
         }

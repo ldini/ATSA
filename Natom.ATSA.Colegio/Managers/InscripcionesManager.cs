@@ -113,6 +113,7 @@ namespace Natom.ATSA.Colegio.Managers
             r.TrabajoLocalidad = Inscripcion.TrabajoLocalidad;
             r.TrabajoRegionSanitaria = Inscripcion.TrabajoRegionSanitaria;
             r.TrabajoTelefono = Inscripcion.TrabajoTelefono;
+            r.CicloIngreso = Inscripcion.CicloIngreso;
 
             db.Entry<Inscripcion>(r).State = System.Data.Entity.EntityState.Modified;
 
@@ -132,7 +133,10 @@ namespace Natom.ATSA.Colegio.Managers
         {
             if (this.db.Inscripciones.Any(i => !i.BajaCarreraFecha.HasValue
                                                 && i.DNI.Equals(Inscripcion.DNI)
-                                                && (i.AltaFecha.HasValue && i.AltaFecha.Value.Year <= (i.CarreraCurso.TipoDuracionId == 2 ? (i.AltaFecha.Value.Year + i.CarreraCurso.Duracion - 1) : i.AltaFecha.Value.Year)) && i.CicloLectivoId.Equals(Inscripcion.CicloLectivoId) //Comment
+                                                && (i.AltaFecha.HasValue 
+                                                && i.AltaFecha.Value.Year <= (i.CarreraCurso.TipoDuracionId == 2 ? (i.AltaFecha.Value.Year + i.CarreraCurso.Duracion - 1) : i.AltaFecha.Value.Year)) 
+                                                //&& i.CicloLectivoId.Equals(Inscripcion.CicloLectivoId) 
+                                                && i.CicloIngreso.Equals(Inscripcion.CicloIngreso) //Comment
                                                 && i.CarreraCursoId.Equals(Inscripcion.CarreraCursoId)))
             {
                 throw new Exception("Ya existe una inscripción vigente de la misma persona para la misma carrera / curso.");
