@@ -283,13 +283,13 @@ namespace Natom.ATSA.Colegio.Controllers
 
             Func<ListarCobranzasResult, string> orderingFunction =
                 (c => dtParams.SortByColumnIndex == 0 ? c.Afiliado ?? "NO" : 
-                dtParams.SortByColumnIndex == 1 ? " " + c.Nombre :
+                dtParams.SortByColumnIndex == 1 ? c.Apellido + " " + c.Nombre :
                 dtParams.SortByColumnIndex == 2 ? c.DNI.ToString() :
                 dtParams.SortByColumnIndex == 3 ? c.CarreraCurso.ToString() :
                 //.SortByColumnIndex == 4 ? c.Descripcion.ToString() :
-                dtParams.SortByColumnIndex == 5 ? ((c.Anio * 12) + c.Mes).ToString() :
-                dtParams.SortByColumnIndex == 6 ? c.Recibo.ToString().PadLeft(8, '0') :
-                dtParams.SortByColumnIndex == 7 ? c.Estado.ToString() :
+                dtParams.SortByColumnIndex == 4 ? ((c.Anio * 12) + c.Mes).ToString() :
+                dtParams.SortByColumnIndex == 5 ? c.Recibo :
+                dtParams.SortByColumnIndex == 6 ? c.Estado.ToString() :
                 "");
 
             if (dtParams.SortingDirection == eSortingDirection.ASC)
