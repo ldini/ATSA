@@ -40,7 +40,7 @@ namespace Natom.ATSA.Colegio.Controllers
 
         public ActionResult ObtenerListadoIndex(JQueryDataTableParamModel param, int? filtrocarreracurso, int? filtrociclolectivo)
         {
-            DataTableParams dtParams = new DataTableParams(Request);
+           DataTableParams dtParams = new DataTableParams(Request);
             int cantidadRegistros = this.manager.ObtenerCantidadInscripciones();
 
             IEnumerable<Inscripcion> cargasFiltradas = this.manager.ObtenerInscripciones(dtParams.Search, filtrocarreracurso, filtrociclolectivo);

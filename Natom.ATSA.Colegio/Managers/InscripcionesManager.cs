@@ -32,7 +32,7 @@ namespace Natom.ATSA.Colegio.Managers
                                     || (q.Afiliado != null && q.Afiliado.ToLower().Contains(search))
                                     || q.DNI.ToLower().Contains(search)
                                     || q.CarreraCurso.Titulo.ToLower().Contains(search)
-                                    || q.CicloLectivo.Descripcion.ToLower().Contains(search) //Comment
+                                    //|| q.CicloLectivo.Descripcion.ToLower().Contains(search) //Comment
                                     );
             }
 
@@ -41,17 +41,21 @@ namespace Natom.ATSA.Colegio.Managers
                 query = query.Where(x => x.CarreraCursoId == filtrocarreracurso);
             }
 
-            if (filtrociclolectivo != null)
+            if (filtrociclolectivo != null)                
             {
+                Func<string, int> ingreso = s => {
+                    int i;
+                    return int.TryParse(s, out i) ? i : 0;
+                };
                 if (filtrociclolectivo > 0)
                     query = query.Where(i =>
                                                 i.CarreraCurso.TipoDuracionId == 2
-                                                    ? (DateTime.Now.Year - i.AltaFecha.Value.Year) + 1 == filtrociclolectivo
+                                                    ? (DateTime.Now.Year - i.AltaFecha.Value.Year + ingreso(i.CicloIngreso)) + 1 == filtrociclolectivo
                                                     : filtrociclolectivo == 1 && new DateTime(i.AltaFecha.Value.Year, 2, 1).AddMonths(i.CarreraCurso.Duracion + 1).AddDays(-1) >= DateTime.Now.Date
                                         );
                 else
                     query = query.Where(i => i.CarreraCurso.TipoDuracionId == 2
-                                                    ? (DateTime.Now.Year - i.AltaFecha.Value.Year) + 1 > i.CarreraCurso.Duracion
+                                                    ? (DateTime.Now.Year - i.AltaFecha.Value.Year + ingreso(i.CicloIngreso)) + 1 > i.CarreraCurso.Duracion
                                                     : new DateTime(i.AltaFecha.Value.Year, 2, 1).AddMonths(i.CarreraCurso.Duracion + 1).AddDays(-1) < DateTime.Now.Date
                                         );
             }
