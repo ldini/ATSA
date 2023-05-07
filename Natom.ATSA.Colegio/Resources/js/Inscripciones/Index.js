@@ -1,9 +1,10 @@
 ﻿$(document).ready(function () {
-    $("#FiltroCarreraCurso,#FiltroCicloLectivo").chosen();
-    $("#FiltroCarreraCurso,#FiltroCicloLectivo").on('change', function () {
+    $("#FiltroCarreraCurso,#FiltroCicloLectivo").chosen();//Comment
+    $("#FiltroCarreraCurso,#FiltroAnulado,#FiltroCicloLectivo").on('change', function () {//Comment
         var idcarreracurso = parseInt($("#FiltroCarreraCurso").val());
         var idciclolectivo = parseInt($("#FiltroCicloLectivo").val());
-        var url = ObtenerUrl(idcarreracurso, idciclolectivo);
+        var idAnulado = parseInt($("#FiltroAnulado").val());//Comment
+        var url = ObtenerUrl(idcarreracurso, idciclolectivo, idAnulado);//Comment
         $("#tbl").DataTable().ajax.url(url);
         $("#tbl").DataTable().ajax.reload();
     });
@@ -117,8 +118,8 @@
     });
 });
 
-function ObtenerUrl(filtrocarreracurso, filtrociclolectivo) {
-    return "/colegiotest/inscripciones/ObtenerListadoIndex?filtrocarreracurso=" + filtrocarreracurso + "&filtrociclolectivo=" + filtrociclolectivo;
+function ObtenerUrl(filtrocarreracurso, filtrociclolectivo, filtroAnulado) {
+    return "/colegiotest/inscripciones/ObtenerListadoIndex?filtrocarreracurso=" + filtrocarreracurso + "&filtrociclolectivo=" + filtrociclolectivo + "&filtroAnulado=" + filtroAnulado;
 }
 
 function MostrarDocsPendientes(inscripcionId) {

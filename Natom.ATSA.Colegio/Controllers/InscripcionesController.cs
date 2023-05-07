@@ -38,12 +38,12 @@ namespace Natom.ATSA.Colegio.Controllers
             }
         }
 
-        public ActionResult ObtenerListadoIndex(JQueryDataTableParamModel param, int? filtrocarreracurso, int? filtrociclolectivo)
+        public ActionResult ObtenerListadoIndex(JQueryDataTableParamModel param, int? filtrocarreracurso, int? filtrociclolectivo, int? filtroAnulado)
         {
            DataTableParams dtParams = new DataTableParams(Request);
             int cantidadRegistros = this.manager.ObtenerCantidadInscripciones();
 
-            IEnumerable<Inscripcion> cargasFiltradas = this.manager.ObtenerInscripciones(dtParams.Search, filtrocarreracurso, filtrociclolectivo);
+            IEnumerable<Inscripcion> cargasFiltradas = this.manager.ObtenerInscripciones(dtParams.Search, filtrocarreracurso, filtrociclolectivo, filtroAnulado); //Comment filtroAnulado
             
             Func<Inscripcion, string> orderingFunction =
                 (c => dtParams.SortByColumnIndex == 0 ? (c.Afiliado ?? "NO") :

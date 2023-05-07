@@ -17,7 +17,7 @@ namespace Natom.ATSA.Colegio.Managers
             return this.db.Database.SqlQuery<InscripcionesQueDebenDocumentacionResult>("SELECT * FROM vwInscripcionesQueDebenDocumentacion");
         }
 
-        public IEnumerable<Inscripcion> ObtenerInscripciones(string search, int? filtrocarreracurso, int? filtrociclolectivo)
+        public IEnumerable<Inscripcion> ObtenerInscripciones(string search, int? filtrocarreracurso, int? filtrociclolectivo,int? filtroAnulado)
         {
             IEnumerable<Inscripcion> query = this.db.Inscripciones
                                                     .Include("CarreraCurso")
@@ -60,6 +60,12 @@ namespace Natom.ATSA.Colegio.Managers
                                         );
             }
 
+            //Comment
+            if (filtroAnulado > 0)
+            {
+                query = query.Where(x => !x.BajaCarreraFecha.HasValue);
+            }
+            //----
             return query;
         }
 

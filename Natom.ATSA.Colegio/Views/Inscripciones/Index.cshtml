@@ -12,7 +12,7 @@
     }
 </style>
 <div class="row" style="display:inline-block;width:100%">
-    <div class="col-md-4">
+    <div class="col-md-3">
         <h2>Inscripciones</h2>
     </div>
     <div class="col-xs-3">
@@ -41,6 +41,23 @@
             </select>
         </div>
     </div>
+    <div class="col-xs-1">
+        <label>Anulados</label>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" id="FiltroAnulado" value="1" onchange="if(this.checked){this.value='1'}else{this.value='0'}">Ocultar
+            </label>
+        </div>
+    </div>
+    @*<div class="col-xs-1">
+        <div class="form-group">
+            <label>Anulado</label>
+            <select id="FiltroAnulado" class="form-control">
+                <option value="0">Anulado</option>
+                <option value="1">No Anulado</option>
+            </select>
+        </div>
+    </div>*@
     <div class="col-md-2">
         <a class="btn btn-success pull-right" style="margin-right:-30px;margin-top:12px;" id="NuevaInscripcion">Nueva</a>
     </div>
