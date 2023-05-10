@@ -308,9 +308,6 @@
         $("#CarreraCursoId").unbind().change(function () {
             var id = $(this).val();
             ObtenerRequisitos(id);
-        }).trigger("change");
-
-        $("#CarreraCursoId").change(function () {
 
             carrera = {
                 id: $(this).find(":selected").data("id"),
@@ -323,7 +320,7 @@
 
             if (carrera.tipo == "2") {
                 for (let i = 1; i <= carrera.duracion; i++)
-                    $("#CicloLectivoId").append("<option value='" + (i-1) + "'> Inscripcion a " + i + "ª año</option>");
+                    $("#CicloLectivoId").append("<option value='" + (i - 1) + "'> Inscripcion a " + i + "ª año</option>");
             }
             else if (carrera.tipo == "1")
                 $("#CicloLectivoId").append("<option value='" + 0 + "'> Inscripcion a " + 1 + "ª año</option>");
@@ -331,8 +328,31 @@
                 $("#CicloLectivoId").append("<option value='" + -1 + "'>Seleccione Carrera</option>");
                 $("#CicloLectivoId").prop("disabled", true);
             }
+        }).trigger("change");
 
-        });
+        //$("#CarreraCursoId").change(function () {
+
+        //    carrera = {
+        //        id: $(this).find(":selected").data("id"),
+        //        duracion: $(this).find(":selected").data("duracion"),
+        //        tipo: $(this).find(":selected").data("tipo")
+        //    }
+
+        //    $("#CicloLectivoId").prop("disabled", false);
+        //    $("#CicloLectivoId").empty();
+
+        //    if (carrera.tipo == "2") {
+        //        for (let i = 1; i <= carrera.duracion; i++)
+        //            $("#CicloLectivoId").append("<option value='" + (i-1) + "'> Inscripcion a " + i + "ª año</option>");
+        //    }
+        //    else if (carrera.tipo == "1")
+        //        $("#CicloLectivoId").append("<option value='" + 0 + "'> Inscripcion a " + 1 + "ª año</option>");
+        //    else {
+        //        $("#CicloLectivoId").append("<option value='" + -1 + "'>Seleccione Carrera</option>");
+        //        $("#CicloLectivoId").prop("disabled", true);
+        //    }
+
+        //});
 
         $("#NroAfiliado").unbind().change(function () {
             var nro = $(this).val();

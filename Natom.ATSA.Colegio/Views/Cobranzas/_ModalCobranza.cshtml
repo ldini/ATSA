@@ -103,17 +103,15 @@
         var anio = $("#Anio").val();
         var monto = parseFloat($("#txtMonto").val().replace(" ", "").replace("$", "").replace(",", "."));
         var observaciones = $("#txtObservaciones").val();
-
         if (isNaN(monto)) {
             Mensajes.MostrarError("Monto inválido.");
             return;
         }
-
         MostrarCargando();
         $.ajax({
             url: '/colegiotest/cobranzas/Grabar',
             method: 'POST',
-            data: { inscripcionId: inscripcionId, mes: mes, anio: anio, monto: monto.toFixed(2).replace(".", ","), observaciones: observaciones, efectivo: $("#chkEfectivo").is(":checked") },
+            data: { inscripcionId: inscripcionId, mes: mes, anio: anio, monto: monto, observaciones: observaciones, efectivo: $("#chkEfectivo").is(":checked") },
             dataType: 'json',
             success: function (data) {
                 if (data.success == true) {
